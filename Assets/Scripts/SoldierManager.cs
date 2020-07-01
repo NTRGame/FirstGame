@@ -5,18 +5,35 @@ using UnityEngine;
 public class SoldierManager : MonoBehaviour
 {
     [SerializeField]
-    public Soldier soldier;
+    private Soldier soldier;
     private bool IsMove = true;
 
+    [SerializeField]
     private GameObject target;
 
-    void OnCollisionEnter(Collision other)
+    public void Init(Soldier soldier)
     {
-        IsMove = false;       
-        GetComponent<Animator>().SetTrigger("Attack");
-        target = other.gameObject;
-        soldier = new Soldier(10,1,1,SoldierType.FlagZombie,3);
-        StartCoroutine(Attack());
+        this.soldier = soldier;
+        GetComponent<SphereCollider>().radius = soldier.AttackDistance;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        try
+        {
+            if (other.gameObject.GetComponent<SoldierManager>().soldier != null && other.gameObject.GetComponent<SoldierManager>().soldier.playerType != soldier.playerType)
+            {
+                Debug.Log(other.gameObject.name);
+                target = other.gameObject;
+                IsMove = false;
+                GetComponent<Animator>().SetTrigger("Attack");
+                StartCoroutine(Attack());
+            }
+        }
+        catch
+        {
+
+        }     
     }
 
     IEnumerator Attack()
@@ -28,21 +45,32 @@ public class SoldierManager : MonoBehaviour
             if (time <= 0)
             {
                 soldier.Attack(target.GetComponent<SoldierManager>().soldier);
-                if (target.GetComponent<SoldierManager>().soldier.Healthy <= 0 && target.GetComponent<SoldierManager>().soldier.IsAlive)
+                if (target.GetComponent<SoldierManager>().soldier.Healthy <= 0 )
                 {
-                    target.GetComponent<SoldierManager>().soldier.IsAlive = false;
-                    StartCoroutine(target.GetComponent<SoldierManager>().Death());
                     IsMove = true;
-                    GetComponent<Animator>().SetTrigger("Attack");
+                    GetComponent<Animator>().SetTrigger("UnAttack");
+                    if (target.GetComponent<SoldierManager>().soldier.IsAlive)
+                    {
+                        target.GetComponent<SoldierManager>().soldier.IsAlive = false;
+                        StartCoroutine(target.GetComponent<SoldierManager>().Death());
+                    }
                 }
             }
             yield return null;
         }
     }
 
+    void Start()
+    {
+        GetComponent<Rigidbody>().velocity = new Vector3();
+    }
+
     public IEnumerator Death()
     {
         Debug.Log("Death " + name);
+
+        Destroy(GetComponent<SphereCollider>());
+        Destroy(GetComponent<BoxCollider>());
         GetComponent<Animator>().SetTrigger("Death");
         
         yield return null ;
@@ -56,9 +84,10 @@ public class SoldierManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (IsMove)
+        GetComponent<Rigidbody>().velocity = new Vector3();
+        if (IsMove && soldier!=null)
         {
-            if (name.Equals("FlagZombie1"))
+            if (soldier.playerType == PlayerType.Left)
             {
                 transform.position = transform.position + new Vector3(Time.deltaTime, 0, 0);
             }
