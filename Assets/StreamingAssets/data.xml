@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoliderDataList xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soliderData>
+    <solidertype>Zombie</solidertype>
+    <healthy>2</healthy>
+    <speed>3</speed>
+    <attackDistance>4</attackDistance>
+    <force>5</force>
+  </soliderData>
+  <soliderData>
+    <solidertype>FlagZombie</solidertype>
+    <healthy>2</healthy>
+    <speed>3</speed>
+    <attackDistance>4</attackDistance>
+    <force>5</force>
+  </soliderData>
+</SoliderDataList>

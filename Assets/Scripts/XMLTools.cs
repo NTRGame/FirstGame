@@ -6,120 +6,38 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Xml.Serialization;
 using UnityEngine;
+using UnityEngine.Networking;
+using System.Xml;
+
 public class XMLTools
 {
-
-
-[Serializable]
-[XmlRoot("root")]
-    public class solider_data{
-
-     public   int solidertype;
-      public  float healthy;
-     public   float speed;
-     public   float attackDistance;
-        
-    public    float force;
-      public solider_data( int solidertype,float healthy,float speed,float attackDistance,float force){
-        this.solidertype=solidertype;
-        this.healthy=healthy;
-        this.speed=speed;
-        this.attackDistance=attackDistance;
-        this.force=force;
-
-      }
-      public solider_data(){
-        
-
-      }
-
-    }
-
-
-
-     static XMLTools instance;
-     private static string path;
-     
-
-     private void Awake() {
-         
-         
-     }
-
-
-
-    public static XMLTools Instance (){
-       
-            if (instance == null) {
-                instance = new XMLTools ();
-                  path = Application.dataPath+"/data.xml";
+    public static Soldier GetSoldierByType(SoldierType soldierType, PlayerType player)
+    {
+        ////float healthy, float speed, float attackDistance, SoldierType soldierType,float force
+        //foreach (Soldier element in Soldiers)
+        //{
+        //    if (element.soldierType == soldierType)
+        //    {
+        //        return new Soldier(element.healthy, element.speed, element.attackDistance, soldierType, element.force) { playerType = player };
+        //    }
+        //}
+        var request = UnityWebRequest.Get(Application.streamingAssetsPath + "/data.xml");
+        request.SendWebRequest();
+        while (!request.isDone) ;
+        XmlDocument xmlDocument = new XmlDocument();
+        xmlDocument.LoadXml(request.downloadHandler.text);
+        Debug.Log(xmlDocument.SelectSingleNode("SoliderDataList").InnerText);
+        foreach (XmlNode node in xmlDocument.SelectSingleNode("SoliderDataList").ChildNodes)
+        {
+            if (node.ChildNodes.Item(0).Equals(soldierType))
+            {
+                Debug.Log(node.ChildNodes.Item(0).InnerText);
+                return new Soldier(float.Parse(node.ChildNodes.Item(1).InnerText), float.Parse(node.ChildNodes.Item(2).InnerText), float.Parse(node.ChildNodes.Item(3).InnerText), soldierType, float.Parse(node.ChildNodes.Item(4).InnerText)) { playerType = player };
             }
-            return instance;
-        
-
-    }
-
-    public void savedatatoxml(object data,Type type){
-
-    
-        FileInfo fileinfo = new FileInfo(path);
-        
-        StreamWriter sw; 
-        
-        if (!fileinfo.Exists) 
-        {
-            
-            sw = fileinfo.CreateText();
-        }
-        else
-        {
-            
-            fileinfo.Delete();
-            sw = fileinfo.CreateText();
+           
         }
 
-
-       
-        XmlSerializer ser = new XmlSerializer(type);
-        
-        ser.Serialize(sw,data);
-
-        sw.Close();  
-
-        Debug.Log("存储成功");
-
+        return new Soldier(10f, 3f, 3, soldierType, 3f) { playerType = player };
 
     }
-    public object loaddataftomxml(Type type){
-
-
-     
-        FileStream fstream = new FileStream(path,FileMode.Open);
-        XmlSerializer xmlSer = new XmlSerializer(type);
-        
-       
-        
-        return xmlSer.Deserialize(fstream);
-
-    }
-
-
-
-     public static Soldier GetSoldierByType(SoldierType soldierType,PlayerType player)
-     {
-
-        
-      List<solider_data> solider_Datas=(List<solider_data>)XMLTools.Instance().loaddataftomxml(typeof(List<solider_data>));
-      //float healthy, float speed, float attackDistance, SoldierType soldierType,float force
-    　foreach (solider_data element in solider_Datas)  
-　　　　{ 
-　　　　　　if(element.solidertype==(int)soldierType){
-              return new Soldier(element.healthy, element.speed, element.attackDistance, soldierType, element.force) { playerType = player };  
-           }
-　　　　} 
-      
-
-         return new Soldier(10f, 3f, 3, soldierType, 3f) { playerType = player };
-         
-     }
 }

@@ -2,8 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Gamemanager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
+    private static GameManager _instance;
+
+    public static GameManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+                //则创建一个
+                _instance = GameObject.Find("BG").GetComponent<GameManager>();
+            //返回这个实例
+            return _instance;
+        }
+    }
 
     public void CreateSoldier()
     {

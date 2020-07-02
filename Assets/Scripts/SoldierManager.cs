@@ -7,7 +7,8 @@ public class SoldierManager : MonoBehaviour
     [SerializeField]
     private Soldier soldier;
     private bool IsMove = true;
-
+    private float startTime;
+    private Vector3 startPostion;
     [SerializeField]
     private GameObject target;
 
@@ -27,7 +28,7 @@ public class SoldierManager : MonoBehaviour
                 target = other.gameObject;
                 IsMove = false;
                 GetComponent<Animator>().SetTrigger("Attack");
-                StartCoroutine(Attack());
+                
             }
         }
         catch
@@ -39,13 +40,14 @@ public class SoldierManager : MonoBehaviour
     IEnumerator Attack()
     {
         float time = soldier.Frequency;
-        while(target != null && target.activeSelf)
+        while (true)
         {
             time -= Time.deltaTime;
-            if (time <= 0)
+            if (time <= 0 && target != null && target.activeSelf)
             {
                 soldier.Attack(target.GetComponent<SoldierManager>().soldier);
-                if (target.GetComponent<SoldierManager>().soldier.Healthy <= 0 )
+                //如果死亡
+                if (target.GetComponent<SoldierManager>().soldier.Healthy <= 0)
                 {
                     IsMove = true;
                     GetComponent<Animator>().SetTrigger("UnAttack");
@@ -55,6 +57,8 @@ public class SoldierManager : MonoBehaviour
                         StartCoroutine(target.GetComponent<SoldierManager>().Death());
                     }
                 }
+                //重置攻击cd
+                time = soldier.Frequency;
             }
             yield return null;
         }
@@ -63,6 +67,9 @@ public class SoldierManager : MonoBehaviour
     void Start()
     {
         GetComponent<Rigidbody>().velocity = new Vector3();
+        startTime = Time.time;
+        startPostion = transform.position;
+        StartCoroutine(Attack());
     }
 
     public IEnumerator Death()
@@ -89,11 +96,11 @@ public class SoldierManager : MonoBehaviour
         {
             if (soldier.playerType == PlayerType.Left)
             {
-                transform.position = transform.position + new Vector3(Time.deltaTime, 0, 0);
+                transform.position = Vector3.Lerp(startPostion, GameManager.Instance.RightPlayer.transform.GetChild(0).position, (Time.time-startTime)*0.01f);
             }
             else
             {
-                transform.position = transform.position - new Vector3(Time.deltaTime, 0, 0);
+                transform.position = Vector3.Lerp(startPostion, GameManager.Instance.LeftPlayer.transform.GetChild(0).position, (Time.time - startTime) * 0.01f);
             }
         }
     }
