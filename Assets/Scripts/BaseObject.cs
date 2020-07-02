@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 public class BaseObject
 {
+    public PlayerType playerType;
     public bool IsAlive = true;
     protected float force = 3;
     protected float frequency = 0.5f;
