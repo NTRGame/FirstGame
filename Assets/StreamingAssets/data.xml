@@ -4,8 +4,9 @@
     <solidertype>Zombie</solidertype>
     <healthy>2</healthy>
     <speed>3</speed>
-    <attackDistance>4</attackDistance>
+    <attackDistance>1</attackDistance>
     <force>5</force>
+	<frequency>2</frequency>
   </soliderData>
   <soliderData>
     <solidertype>FlagZombie</solidertype>

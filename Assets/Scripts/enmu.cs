@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 public enum SoldierType
 {
-    FlagZombie
+    Home,FlagZombie
 }
 
 public enum PlayerType
