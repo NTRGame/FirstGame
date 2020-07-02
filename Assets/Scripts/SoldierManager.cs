@@ -96,11 +96,13 @@ public class SoldierManager : MonoBehaviour
         {
             if (soldier.playerType == PlayerType.Left)
             {
-                transform.position = Vector3.Lerp(startPostion, GameManager.Instance.RightPlayer.transform.GetChild(0).position, (Time.time-startTime)*0.01f);
+                //transform.position = Vector3.Lerp(startPostion, GameManager.Instance.RightPlayer.transform.GetChild(0).position, (Time.time-startTime)*0.01f);
+                transform.position = transform.position + (GameManager.Instance.RightPlayer.transform.GetChild(0).position - transform.position) * Time.deltaTime * 0.01f * soldier.Speed;
             }
             else
             {
-                transform.position = Vector3.Lerp(startPostion, GameManager.Instance.LeftPlayer.transform.GetChild(0).position, (Time.time - startTime) * 0.01f);
+                //transform.position = Vector3.Lerp(startPostion, GameManager.Instance.LeftPlayer.transform.GetChild(0).position, (Time.time - startTime) * 0.01f);
+                transform.position = transform.position + (GameManager.Instance.LeftPlayer.transform.GetChild(0).position - transform.position) * Time.deltaTime * 0.01f * soldier.Speed;
             }
         }
     }
