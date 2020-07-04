@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoliderDataList xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <soliderData>
-    <solidertype>Zombie</solidertype>
-    <healthy>2</healthy>
-    <speed>3</speed>
-    <attackDistance>1</attackDistance>
+    <solidertype>Home</solidertype>
+    <healthy>100</healthy>
+    <speed>0</speed>
+    <attackDistance>5</attackDistance>
     <force>5</force>
-	<frequency>2</frequency>
+    <frequency>2</frequency>
+    <bullet>ProjectileStar</bullet>
+  </soliderData>
+  <soliderData>
+    <solidertype>CabbageZombie</solidertype>
+    <healthy>10</healthy>
+    <speed>4</speed>
+    <attackDistance>3</attackDistance>
+    <force>5</force>
+    <frequency>1.5</frequency>
+    <bullet>ProjectileStar</bullet>
   </soliderData>
   <soliderData>
     <solidertype>FlagZombie</solidertype>
-    <healthy>2</healthy>
+    <healthy>30</healthy>
     <speed>3</speed>
-    <attackDistance>4</attackDistance>
-    <force>5</force>
+    <attackDistance>0</attackDistance>
+    <force>2</force>
+    <frequency>2</frequency>
+    <bullet>ProjectileCabbage</bullet>
   </soliderData>
 </SoliderDataList>

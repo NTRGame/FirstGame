@@ -13,7 +13,8 @@ public class Soldier
     protected float attackDistance;
     public static float Price;
     public SoldierType soldierType;
-    private float speed;
+    public BulletType bulletType;
+    protected float speed;
     
     /// <summary>
     /// 速度
@@ -45,9 +46,10 @@ public class Soldier
     /// 初始化
     /// <param name="healthy">生命值</param>
     /// </summary>
-    public Soldier(float healthy, float speed, float attackDistance,SoldierType soldierType, float force, float frequency)
+    public Soldier(float healthy, float speed, float attackDistance,SoldierType soldierType, float force, float frequency,BulletType bulletType)
     {
         this.force = force;
+        this.bulletType = bulletType;
         this.frequency = frequency;
         this.healthy = healthy;
         this.attackDistance = attackDistance;

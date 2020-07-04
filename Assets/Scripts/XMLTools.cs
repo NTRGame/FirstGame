@@ -28,15 +28,14 @@ public class XMLTools
         xmlDocument.LoadXml(request.downloadHandler.text);
         foreach (XmlNode node in xmlDocument.SelectSingleNode("SoliderDataList").ChildNodes)
         {
-            if (node.ChildNodes.Item(0).Equals(soldierType))
+            if ((SoldierType)Enum.Parse(typeof(SoldierType), node.ChildNodes.Item(0).InnerText) == soldierType)
             {
-                Debug.Log(node.ChildNodes.Item(0).InnerText);
-                return new Soldier(float.Parse(node.ChildNodes.Item(1).InnerText), float.Parse(node.ChildNodes.Item(2).InnerText), float.Parse(node.ChildNodes.Item(3).InnerText), soldierType, float.Parse(node.ChildNodes.Item(4).InnerText), float.Parse(node.ChildNodes.Item(5).InnerText));
+                return new Soldier(float.Parse(node.ChildNodes.Item(1).InnerText), float.Parse(node.ChildNodes.Item(2).InnerText), float.Parse(node.ChildNodes.Item(3).InnerText), soldierType, float.Parse(node.ChildNodes.Item(4).InnerText), float.Parse(node.ChildNodes.Item(5).InnerText),(BulletType)Enum.Parse(typeof(BulletType), node.ChildNodes.Item(6).InnerText));
             }
            
         }
 
-        return new Soldier(10f, 3f, 3f,SoldierType.FlagZombie, 3f,2f);
+        return new Soldier(10f, 3f, 3f,SoldierType.FlagZombie, 3f,2f,BulletType.ProjectileCabbage);
 
     }
 }

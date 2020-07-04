@@ -127,7 +127,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 033f3c078fbe2b944a8f7a7393d89559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  IsMove: 1
+  playerType: 0
+  CLoseTarget: []
+  RemoteTarget: []
+  IsInit: 0
+  tankatate:
+  - {fileID: 22100000, guid: 2163b77586e0b014e8dc2f71efc84b6a, type: 2}
+  - {fileID: 22100000, guid: 2163b77586e0b014e8dc2f71efc84b6a, type: 2}
+  - {fileID: 22100000, guid: 4e3bc9a0f46416348b41ec8d3a69dafa, type: 2}
 --- !u!95 &3988977755040701900
 Animator:
   serializedVersion: 3

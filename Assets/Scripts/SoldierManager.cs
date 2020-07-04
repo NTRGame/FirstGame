@@ -13,12 +13,16 @@ public class SoldierManager : MonoBehaviour
     public Soldier soldier;
     public PlayerType playerType;
     [SerializeField]
-    protected GameObject target;
+    protected List<GameObject> CLoseTarget;
+    [SerializeField]
+    protected List<GameObject> RemoteTarget;
+    public bool IsInit = false;
+
+    public AnimatorOverrideController[] tankatate;
 
     public IEnumerator Death()
     {
-        Debug.Log("Death " + name);
-
+        IsMove = false;
         Destroy(GetComponent<SphereCollider>());
         Destroy(GetComponent<BoxCollider>());
         GetComponent<Animator>().SetTrigger("Death");
@@ -29,14 +33,29 @@ public class SoldierManager : MonoBehaviour
     public void Init(Soldier soldier)
     {
         this.soldier = soldier;
+        IsInit = true;
         GetComponent<SphereCollider>().radius = soldier.AttackDistance;
+        if (soldier.soldierType != SoldierType.Home)
+        {
+            GetComponent<Animator>().runtimeAnimatorController = tankatate[(int)soldier.soldierType];
+        }
     }
 
+    public void OnCollisionEnter(Collision other)
+    {
+        if (IsInit && other.gameObject.GetComponent<SoldierManager>().IsInit &&  other.gameObject.GetComponent<SoldierManager>().soldier != null && other.gameObject.GetComponent<SoldierManager>().playerType != playerType)
+        {
+            CLoseTarget.Add(other.gameObject);
+        }
+    }
 
+    public void OnCollisionExit(Collision other)
+    {
+        CLoseTarget.Remove(other.gameObject);
+    }
 
     public void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other + "---" + other.GetType());
         if (other.GetType().Equals(typeof(SphereCollider)))
         {
             return;
@@ -45,9 +64,7 @@ public class SoldierManager : MonoBehaviour
         {
             if (other.gameObject.GetComponent<SoldierManager>().soldier != null && other.gameObject.GetComponent<SoldierManager>().playerType != playerType)
             {
-                target = other.gameObject;
-                IsMove = false;
-                GetComponent<Animator>().SetTrigger("Attack");               
+                RemoteTarget.Add(other.gameObject);
             }
         }
         catch(Exception e)
@@ -56,42 +73,88 @@ public class SoldierManager : MonoBehaviour
         }     
     }
 
-    IEnumerator Attack()
+    public void OnTriggerExit(Collider other)
+    {
+        RemoteTarget.Remove(other.gameObject);
+    }
+
+    IEnumerator RemoteAttack()
     {
         float time = soldier.Frequency;
         while (true)
         {
             time -= Time.deltaTime;
+            while (RemoteTarget.Count > 0 && (RemoteTarget[0] == null || !RemoteTarget[0].activeSelf))
+            {
+                RemoteTarget.RemoveAt(0);
+            }
             if (time <= 0)
             {
-                if(target != null && target.activeSelf)
+                if (RemoteTarget.Count > 0 && RemoteTarget[0].activeSelf)
                 {
-                    soldier.Attack(target.GetComponent<SoldierManager>().soldier);
+                    GameObject Bullet = Resources.Load("Prefabs/Bullet", typeof(GameObject)) as GameObject;
+                    var bullet = Instantiate(Bullet, transform.position, new Quaternion(0, 0, 0, 0), transform);
+                    bullet.GetComponent<BulletManager>().Init(RemoteTarget[0]);
+                    bullet.GetComponent<SpriteRenderer>().sprite = Resources.Load("Sprites/Bullet/" + soldier.bulletType, typeof(Sprite)) as Sprite;
+                    soldier.Attack(RemoteTarget[0].GetComponent<SoldierManager>().soldier);
                     //如果死亡
-                    if (target.GetComponent<SoldierManager>().soldier.Healthy <= 0)
+                    if (RemoteTarget[0].GetComponent<SoldierManager>().soldier.Healthy <= 0)
                     {
-                        IsMove = true;
-                        GetComponent<Animator>().SetTrigger("UnAttack");
-                        if (target.GetComponent<SoldierManager>().soldier.IsAlive)
+                        if (RemoteTarget[0].GetComponent<SoldierManager>().soldier.IsAlive)
                         {
-                            target.GetComponent<SoldierManager>().soldier.IsAlive = false;
-                            StartCoroutine(target.GetComponent<SoldierManager>().Death());
+                            RemoteTarget[0].GetComponent<SoldierManager>().soldier.IsAlive = false;
+                            StartCoroutine(RemoteTarget[0].GetComponent<SoldierManager>().Death());
                         }
                     }
                 }
-                else
-                {
-                    if(soldier.soldierType != SoldierType.Home)
-                        GetComponent<Animator>().SetTrigger("UnAttack");
-                    IsMove = true;
-                    target = null;
-                }
 
-                //重置攻击cd
                 time = soldier.Frequency;
+                //重置攻击cd
+
             }
             yield return null;
         }
+    }
+
+    IEnumerator CloseAttack()
+    {
+        float time = soldier.Frequency;
+        while (true)
+        {
+            time -= Time.deltaTime;
+            while (CLoseTarget.Count > 0 && (CLoseTarget[0] == null || !CLoseTarget[0].activeSelf))
+            {
+                CLoseTarget.RemoveAt(0);
+            }
+            if (time <= 0)
+            {
+                if(CLoseTarget.Count >0 && CLoseTarget[0].activeSelf)
+                {
+                    
+                    soldier.Attack(CLoseTarget[0].GetComponent<SoldierManager>().soldier);
+                    //如果死亡
+                    if (CLoseTarget[0].GetComponent<SoldierManager>().soldier.Healthy <= 0)
+                    {
+                        if (CLoseTarget[0].GetComponent<SoldierManager>().soldier.IsAlive)
+                        {
+                            CLoseTarget[0].GetComponent<SoldierManager>().soldier.IsAlive = false;
+                            StartCoroutine(CLoseTarget[0].GetComponent<SoldierManager>().Death());                            
+                        }
+                    }
+                }
+                
+                time = soldier.Frequency;
+                //重置攻击cd
+
+            }
+            yield return null;
+        }
+    }
+
+    void Awake()
+    {
+        CLoseTarget = new List<GameObject>();
+        RemoteTarget = new List<GameObject>();
     }
 
     void Start()
@@ -100,7 +163,7 @@ public class SoldierManager : MonoBehaviour
         startTime = Time.time;
         startPostion = transform.position;
         if (name.Equals("Home")){
-            Init( new Soldier(100f, 0, 5, SoldierType.Home, 9, 0.5f));
+            Init( XMLTools.GetSoldierByType(SoldierType.Home));
             if(playerType == PlayerType.Left)
             {
                 GameManager.Instance.LeftHome = soldier;
@@ -109,10 +172,12 @@ public class SoldierManager : MonoBehaviour
             {
                 GameManager.Instance.RightHome = soldier;
             }
-            StartCoroutine(Attack());
+            StartCoroutine(CloseAttack());
+            StartCoroutine(RemoteAttack());
             return;
         }
-        StartCoroutine(Attack());
+        StartCoroutine(CloseAttack());
+        StartCoroutine(RemoteAttack());
         playerType = (PlayerType)Enum.Parse(typeof(PlayerType), transform.parent.name);
     }
 
@@ -128,6 +193,16 @@ public class SoldierManager : MonoBehaviour
     void Update()
     {
         GetComponent<Rigidbody>().velocity = new Vector3();
+        if(CLoseTarget.Count >0 || RemoteTarget.Count > 0)
+        {
+            IsMove = false;
+            GetComponent<Animator>().SetBool("IsMove", IsMove);
+        }
+        else
+        {
+            IsMove = true;
+            GetComponent<Animator>().SetBool("IsMove", IsMove);
+        }
         if (IsMove && soldier !=null)
         {
             if (playerType == PlayerType.Left)

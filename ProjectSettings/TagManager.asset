@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Buttet
   layers:
   - Default
   - TransparentFX
@@ -46,4 +47,7 @@ TagManager:
     locked: 0
   - name: Object
     uniqueID: 278884277
+    locked: 0
+  - name: ObjectHead
+    uniqueID: 500960455
     locked: 0

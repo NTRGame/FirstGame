@@ -26,7 +26,7 @@ public class UIManager : MonoBehaviour
 
     public delegate void TimeCallBackDelegate();
     private event TimeCallBackDelegate TimeCallBack;
-
+    public event TimeCallBackDelegate Time30;
 
     void Start()
     {
@@ -53,6 +53,10 @@ public class UIManager : MonoBehaviour
                 intervalTime = 1f;
                 TimeCallBack?.Invoke();
                 timekeeping = timekeeping > 0 ? timekeeping - 1 : interval;
+                if(timekeeping == interval)
+                {
+                    Time30?.Invoke();
+                }
             }
             yield return null;
         }

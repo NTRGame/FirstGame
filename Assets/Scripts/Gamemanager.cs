@@ -22,15 +22,19 @@ public class GameManager : MonoBehaviour
     public void CreateSoldier()
     {
         GameObject FlagZombie = Resources.Load("Prefabs/FlagZombie", typeof(GameObject)) as GameObject;
-        //for(int i = 0; i < 1; i++)
-        //{
-        //    var basePostion = LeftPlayer.transform.GetChild(0).position;
-        //    var random = Random.insideUnitCircle*5;
-        //    basePostion += new Vector3(Mathf.Abs(random.x), random.y);
-        //    var soldier = Instantiate(FlagZombie, basePostion, new Quaternion(0f, 1f, -0.3f, 0), LeftPlayer.transform.GetChild(1).transform);
-        //    soldier.GetComponent<SoldierManager>().Init(XMLTools.GetSoldierByType(SoldierType.FlagZombie));
-        //    soldier.name += Time.time;
-        //}
+        
+        for (int i = 0; i < 1; i++)
+        {
+            var basePostion = LeftPlayer.transform.GetChild(0).position;
+            var random = Random.insideUnitCircle * 5;
+            basePostion += new Vector3(Mathf.Abs(random.x), random.y);
+            var soldier = Instantiate(FlagZombie, basePostion, new Quaternion(0f, 1f, -0.3f, 0), LeftPlayer.transform.GetChild(1).transform);
+            soldier.GetComponent<SoldierManager>().Init(XMLTools.GetSoldierByType(SoldierType.FlagZombie));
+            soldier.name = SoldierType.FlagZombie + "---" + Time.time;
+            soldier = Instantiate(FlagZombie, basePostion, new Quaternion(0f, 1f, -0.3f, 0), LeftPlayer.transform.GetChild(1).transform);
+            soldier.GetComponent<SoldierManager>().Init(XMLTools.GetSoldierByType(SoldierType.CabbageZombie));
+            soldier.name = SoldierType.FlagZombie + "---" + Time.time;
+        }
         for (int i = 0; i < 1; i++)
         {
             var basePostion = RightPlayer.transform.GetChild(0).position;
@@ -38,7 +42,10 @@ public class GameManager : MonoBehaviour
             basePostion += new Vector3(-Mathf.Abs(random.x), random.y);
             var soldier = Instantiate(FlagZombie, basePostion, new Quaternion(0.3f, 0f, 0f, 1f), RightPlayer.transform.GetChild(1).transform);
             soldier.GetComponent<SoldierManager>().Init(XMLTools.GetSoldierByType(SoldierType.FlagZombie));
-            soldier.name += Time.time;
+            soldier.name = SoldierType.FlagZombie + "---" + Time.time;
+            soldier = Instantiate(FlagZombie, basePostion, new Quaternion(0.3f, 0f, 0f, 1f), RightPlayer.transform.GetChild(1).transform);
+            soldier.GetComponent<SoldierManager>().Init(XMLTools.GetSoldierByType(SoldierType.CabbageZombie));
+            soldier.name = SoldierType.FlagZombie + "---" + Time.time;
         }
     }
 
