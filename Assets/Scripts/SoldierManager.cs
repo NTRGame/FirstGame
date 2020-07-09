@@ -23,6 +23,7 @@ public class SoldierManager : MonoBehaviour
     public IEnumerator Death()
     {
         IsMove = false;
+        MapManager.Instance.RemoveSoldier(gameObject);
         Destroy(GetComponent<SphereCollider>());
         Destroy(GetComponent<BoxCollider>());
         GetComponent<Animator>().SetTrigger("Death");
@@ -34,6 +35,7 @@ public class SoldierManager : MonoBehaviour
     {
         this.soldier = soldier;
         IsInit = true;
+        MapManager.Instance.InitSoldier(gameObject);
         GetComponent<SphereCollider>().radius = soldier.AttackDistance;
         if (soldier.soldierType != SoldierType.Home)
         {
@@ -62,8 +64,9 @@ public class SoldierManager : MonoBehaviour
         }
         try
         {
-            if (other.gameObject.GetComponent<SoldierManager>().soldier != null && other.gameObject.GetComponent<SoldierManager>().playerType != playerType)
+            if (other.gameObject.GetComponent<SoldierManager>().soldier != null && other.gameObject.GetComponent<SoldierManager>().playerType != playerType && !RemoteTarget.Contains(other.gameObject))
             {
+                
                 RemoteTarget.Add(other.gameObject);
             }
         }
@@ -75,6 +78,7 @@ public class SoldierManager : MonoBehaviour
 
     public void OnTriggerExit(Collider other)
     {
+        Debug.Log(other.name);
         RemoteTarget.Remove(other.gameObject);
     }
 
@@ -185,6 +189,14 @@ public class SoldierManager : MonoBehaviour
 
     public void End()
     {
+        if(playerType == PlayerType.Left)
+        {
+            GameManager.Instance.RightMoney += 2;
+        }
+        else
+        {
+            GameManager.Instance.LeftMoney += 2;
+        }
         gameObject.SetActive(false);
         Destroy(gameObject);
     }

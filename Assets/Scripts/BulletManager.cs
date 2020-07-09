@@ -10,7 +10,8 @@ public class BulletManager : MonoBehaviour
     private GameObject target;
     private float speed = 500;
     private Vector3 startPostion;
-    private Vector3 endPostion;
+    
+    public Vector3 endPostion;
 
     public void Init(GameObject target)
     {
@@ -20,7 +21,6 @@ public class BulletManager : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.name);
         if (other.gameObject.Equals(target))
         {
             gameObject.SetActive(false);
