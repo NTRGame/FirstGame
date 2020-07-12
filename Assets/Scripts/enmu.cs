@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 public enum SoldierType
 {
-    Home,FlagZombie, CabbageZombie
+    Home, Infantry, Shooter, Cavalry,Tank, SpecialArm
 }
 
 public enum PlayerType
@@ -17,5 +17,5 @@ public enum PlayerType
 
 public enum BulletType
 {
-    ProjectileCabbage, ProjectileStar, ProjectileCactus, ProjectilePea, ProjectileSnowPea
+    ProjectileCabbage, ProjectileStar, ProjectileCactus, ProjectilePea, ProjectileSnowPea,Arrow, Bullet,TankBullet
 }

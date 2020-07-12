@@ -18,7 +18,7 @@ public class SoldierManager : MonoBehaviour
     protected List<GameObject> RemoteTarget;
     public bool IsInit = false;
 
-    public AnimatorOverrideController[] tankatate;
+    public AnimatorOverrideController[] animatorOverrideControllers;
 
     public IEnumerator Death()
     {
@@ -33,13 +33,14 @@ public class SoldierManager : MonoBehaviour
 
     public void Init(Soldier soldier)
     {
+        Debug.Log(soldier);
         this.soldier = soldier;
         IsInit = true;
         MapManager.Instance.InitSoldier(gameObject);
         GetComponent<SphereCollider>().radius = soldier.AttackDistance;
         if (soldier.soldierType != SoldierType.Home)
         {
-            GetComponent<Animator>().runtimeAnimatorController = tankatate[(int)soldier.soldierType];
+            GetComponent<Animator>().runtimeAnimatorController = animatorOverrideControllers[(int)soldier.soldierType];
         }
     }
 
@@ -78,7 +79,6 @@ public class SoldierManager : MonoBehaviour
 
     public void OnTriggerExit(Collider other)
     {
-        Debug.Log(other.name);
         RemoteTarget.Remove(other.gameObject);
     }
 
@@ -97,6 +97,7 @@ public class SoldierManager : MonoBehaviour
                 if (RemoteTarget.Count > 0 && RemoteTarget[0].activeSelf)
                 {
                     GameObject Bullet = Resources.Load("Prefabs/Bullet", typeof(GameObject)) as GameObject;
+                    Bullet.GetComponent<BulletManager>().bulletType = soldier.bulletType;
                     var bullet = Instantiate(Bullet, transform.position, new Quaternion(0, 0, 0, 0), transform);
                     bullet.GetComponent<BulletManager>().Init(RemoteTarget[0]);
                     bullet.GetComponent<SpriteRenderer>().sprite = Resources.Load("Sprites/Bullet/" + soldier.bulletType, typeof(Sprite)) as Sprite;
@@ -159,6 +160,7 @@ public class SoldierManager : MonoBehaviour
     {
         CLoseTarget = new List<GameObject>();
         RemoteTarget = new List<GameObject>();
+        
     }
 
     void Start()

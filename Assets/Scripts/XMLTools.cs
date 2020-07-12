@@ -35,7 +35,7 @@ public class XMLTools
            
         }
 
-        return new Soldier(10f, 3f, 3f,SoldierType.FlagZombie, 3f,2f,BulletType.ProjectileCabbage);
+        return new Soldier(10f, 3f, 3f,SoldierType.Infantry, 3f,2f,BulletType.ProjectileCabbage);
 
     }
 }

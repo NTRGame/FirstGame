@@ -4,27 +4,54 @@
     <solidertype>Home</solidertype>
     <healthy>100</healthy>
     <speed>0</speed>
-    <attackDistance>5</attackDistance>
-    <force>5</force>
-    <frequency>2</frequency>
+    <attackDistance>7</attackDistance>
+    <force>8</force>
+    <frequency>1</frequency>
     <bullet>ProjectileStar</bullet>
   </soliderData>
   <soliderData>
-    <solidertype>CabbageZombie</solidertype>
-    <healthy>10</healthy>
+    <solidertype>Infantry</solidertype>
+    <healthy>15</healthy>
     <speed>4</speed>
-    <attackDistance>3</attackDistance>
+    <attackDistance>0</attackDistance>
     <force>5</force>
     <frequency>1.5</frequency>
     <bullet>ProjectileStar</bullet>
   </soliderData>
   <soliderData>
-    <solidertype>FlagZombie</solidertype>
-    <healthy>30</healthy>
+    <solidertype>Shooter</solidertype>
+    <healthy>10</healthy>
     <speed>3</speed>
+    <attackDistance>6</attackDistance>
+    <force>4</force>
+    <frequency>1.3</frequency>
+    <bullet>Arrow</bullet>
+  </soliderData>
+  <soliderData>
+    <solidertype>Cavalry</solidertype>
+    <healthy>20</healthy>
+    <speed>6</speed>
     <attackDistance>0</attackDistance>
-    <force>2</force>
+    <force>8</force>
+    <frequency>1.5</frequency>
+    <bullet>ProjectileStar</bullet>
+  </soliderData>
+  <soliderData>
+    <solidertype>Tank</solidertype>
+    <healthy>30</healthy>
+    <speed>5</speed>
+    <attackDistance>8</attackDistance>
+    <force>10</force>
+    <frequency>1</frequency>
+    <bullet>TankBullet</bullet>
+  </soliderData>
+  <soliderData>
+    <solidertype>SpecialArm</solidertype>
+    <healthy>40</healthy>
+    <speed>3</speed>
+    <attackDistance>7</attackDistance>
+    <force>3</force>
     <frequency>2</frequency>
-    <bullet>ProjectileCabbage</bullet>
+    <bullet>Bullet</bullet>
   </soliderData>
 </SoliderDataList>

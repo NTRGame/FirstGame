@@ -42,6 +42,11 @@ public class Soldier
             target.healthy -= force;
     }
 
+    public override string ToString()
+    {
+        return soldierType.ToString();
+    }
+
     /// <summary>
     /// 初始化
     /// <param name="healthy">生命值</param>

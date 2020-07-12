@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     private static GameManager _instance;
+    //兵种数量
     public Dictionary<SoldierType, int> LeftValue;
     public Dictionary<SoldierType, int> RightValue;
 
@@ -61,11 +62,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void DictHandle(Dictionary<SoldierType, int> keyValues, SoldierType soldierType,int value)
-    {
-        //keyValues.
-    }
-
+    /// <summary>
+    /// 添加要生成的部队
+    /// </summary>
     public void AddSoldier()
     {
         var button = EventSystem.current.currentSelectedGameObject;
@@ -102,61 +101,56 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public IEnumerator LeftCreateSoldier()
+    {
+        lock (LeftValue)
+        {
+            LeftMoney += 100;
+            RightMoney += 100;
+            GameObject FlagZombie = Resources.Load("Prefabs/FlagZombie", typeof(GameObject)) as GameObject;
+            foreach (var keyValue in LeftValue)
+            {
+                for (int i = 0; i < keyValue.Value; i++)
+                {
+                    var basePostion = LeftPlayer.transform.GetChild(0).position;
+                    var random = UnityEngine.Random.insideUnitCircle * 5;
+                    basePostion += new Vector3(Mathf.Abs(random.x), random.y);
+                    var soldier = Instantiate(FlagZombie, basePostion, new Quaternion(0f, 1f, -0.3f, 0), LeftPlayer.transform.GetChild(1).transform);
+                    soldier.GetComponent<SoldierManager>().Init(XMLTools.GetSoldierByType(keyValue.Key));
+                    soldier.name = keyValue.Key.ToString() + "---" + Time.time;
+                    yield return null;
+                }
+            }
+        }       
+    }
+
+    public IEnumerator RightCreateSoldier()
+    {
+        lock (RightValue)
+        {
+            LeftMoney += 100;
+            RightMoney += 100;
+            GameObject FlagZombie = Resources.Load("Prefabs/FlagZombie", typeof(GameObject)) as GameObject;
+            foreach (var keyValue in RightValue)
+            {
+                for (int i = 0; i < keyValue.Value; i++)
+                {
+                    var basePostion = RightPlayer.transform.GetChild(0).position;
+                    var random = UnityEngine.Random.insideUnitCircle * 5;
+                    basePostion += new Vector3(-Mathf.Abs(random.x), random.y);
+                    var soldier = Instantiate(FlagZombie, basePostion, new Quaternion(0.3f, 0f, 0f, 1f), RightPlayer.transform.GetChild(1).transform);
+                    soldier.GetComponent<SoldierManager>().Init(XMLTools.GetSoldierByType(keyValue.Key));
+                    soldier.name = keyValue.Key.ToString() + "---" + Time.time;
+                    yield return null;
+                }
+            }
+        }
+    }
+
     public void CreateSoldier()
     {
-        LeftMoney += 100;
-        RightMoney += 100;
-        GameObject FlagZombie = Resources.Load("Prefabs/FlagZombie", typeof(GameObject)) as GameObject;
-        Debug.Log(RightValue);
-        Debug.Log(LeftValue);
-        foreach (var keyValue in LeftValue)
-        {
-            for(int i = 0;i< keyValue.Value; i++)
-            {
-                var basePostion = LeftPlayer.transform.GetChild(0).position;
-                var random = UnityEngine.Random.insideUnitCircle * 5;
-                basePostion += new Vector3(Mathf.Abs(random.x), random.y);
-                var soldier = Instantiate(FlagZombie, basePostion, new Quaternion(0f, 1f, -0.3f, 0), LeftPlayer.transform.GetChild(1).transform);
-                soldier.GetComponent<SoldierManager>().Init(XMLTools.GetSoldierByType(keyValue.Key));
-                soldier.name = keyValue.Key.ToString() + "---" + Time.time;
-            }
-        }
-        foreach (var keyValue in RightValue)
-        {
-            for (int i = 0; i < keyValue.Value; i++)
-            {
-                var basePostion = RightPlayer.transform.GetChild(0).position;
-                var random = UnityEngine.Random.insideUnitCircle * 5;
-                basePostion += new Vector3(-Mathf.Abs(random.x), random.y);
-                var soldier = Instantiate(FlagZombie, basePostion, new Quaternion(0.3f, 0f, 0f, 1f), RightPlayer.transform.GetChild(1).transform);
-                soldier.GetComponent<SoldierManager>().Init(XMLTools.GetSoldierByType(keyValue.Key));
-                soldier.name = keyValue.Key.ToString() + "---" + Time.time;
-            }
-        }
-        //for (int i = 0; i < 1; i++)
-        //{
-        //    var basePostion = LeftPlayer.transform.GetChild(0).position;
-        //    var random = UnityEngine.Random.insideUnitCircle * 5;
-        //    basePostion += new Vector3(Mathf.Abs(random.x), random.y);
-        //    var soldier = Instantiate(FlagZombie, basePostion, new Quaternion(0f, 1f, -0.3f, 0), LeftPlayer.transform.GetChild(1).transform);
-        //    soldier.GetComponent<SoldierManager>().Init(XMLTools.GetSoldierByType(SoldierType.FlagZombie));
-        //    soldier.name = SoldierType.FlagZombie + "---" + Time.time;
-        //    soldier = Instantiate(FlagZombie, basePostion, new Quaternion(0f, 1f, -0.3f, 0), LeftPlayer.transform.GetChild(1).transform);
-        //    soldier.GetComponent<SoldierManager>().Init(XMLTools.GetSoldierByType(SoldierType.CabbageZombie));
-        //    soldier.name = SoldierType.FlagZombie + "---" + Time.time;
-        //}
-        //for (int i = 0; i < 1; i++)
-        //{
-        //    var basePostion = RightPlayer.transform.GetChild(0).position;
-        //    var random = UnityEngine.Random.insideUnitCircle * 5;
-        //    basePostion += new Vector3(-Mathf.Abs(random.x), random.y);
-        //    var soldier = Instantiate(FlagZombie, basePostion, new Quaternion(0.3f, 0f, 0f, 1f), RightPlayer.transform.GetChild(1).transform);
-        //    soldier.GetComponent<SoldierManager>().Init(XMLTools.GetSoldierByType(SoldierType.FlagZombie));
-        //    soldier.name = SoldierType.FlagZombie + "---" + Time.time;
-        //    soldier = Instantiate(FlagZombie, basePostion, new Quaternion(0.3f, 0f, 0f, 1f), RightPlayer.transform.GetChild(1).transform);
-        //    soldier.GetComponent<SoldierManager>().Init(XMLTools.GetSoldierByType(SoldierType.CabbageZombie));
-        //    soldier.name = SoldierType.FlagZombie + "---" + Time.time;
-        //}
+        StartCoroutine(LeftCreateSoldier());
+        StartCoroutine(RightCreateSoldier());
     }
 
     public GameObject LeftPlayer,RightPlayer;
@@ -175,6 +169,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //更新血量
         RightHealthy.transform.localScale = new Vector3(RightHome.Healthy/100f, 1, 1);
         LeftHealthy.transform.localScale = new Vector3(LeftHome.Healthy / 100f, 1, 1);
     }
